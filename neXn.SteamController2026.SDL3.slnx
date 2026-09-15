@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="LICENSE.txt" />
+    <File Path="README.md" />
+  </Folder>
+  <Project Path="neXn.SteamController2026.SDL3/neXn.SteamController2026.SDL3.csproj" />
+  <Project Path="UnitTests/UnitTests.csproj" />
+</Solution>
