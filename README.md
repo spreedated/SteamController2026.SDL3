@@ -9,7 +9,10 @@
 	
 [!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://buymeacoffee.com/spreed)
 
-Amazon Seller Central Image Packager is a desktop utility built with Avalonia and C# that streamlines the process of creating image upload packages for Amazon listings. It is designed for sellers or integrators who regularly manage product images across multiple ASINs.
+A lightweight .NET library for detecting the 2026 Steam Controller and 
+reading its battery percentage and power state through SDL3.
+
+Supports USB, Bluetooth, Proteus wireless puck, and Nereid wireless puck connections.
 
 ## Features
 
