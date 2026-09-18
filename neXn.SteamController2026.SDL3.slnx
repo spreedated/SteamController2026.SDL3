@@ -3,6 +3,7 @@
     <File Path="LICENSE.txt" />
     <File Path="README.md" />
   </Folder>
+  <Project Path="Demo/Demo.csproj" Id="00319ab4-9cdb-4d6b-a51a-ace21822ede7" />
   <Project Path="neXn.SteamController2026.SDL3/neXn.SteamController2026.SDL3.csproj" />
   <Project Path="UnitTests/UnitTests.csproj" />
 </Solution>
