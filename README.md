@@ -40,6 +40,13 @@ Supports USB, Bluetooth, Proteus wireless puck, and Nereid wireless puck connect
 
 ## Usage
 
+### NOTE
+
+You need to have the correct SDL3 runtime installed for your platform. The library does not include the SDL3 binaries.
+
+For Windows, use:
+`<PackageReference Include="SDL3-CS.Windows" Version="3.4.20" />`
+
 ```csharp
 using neXn.SteamController2026.SDL3;
 
