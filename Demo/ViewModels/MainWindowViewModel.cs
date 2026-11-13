@@ -1,16 +1,17 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using neXn.SteamController2026.SDL3;
 using neXn.SteamController2026.SDL3.Models;
-using System;
-using System.Drawing;
-using Serilog.Extensions.Logging;
-using System.Timers;
-using System.Windows.Forms;
-using System.Diagnostics;
 using Serilog;
+using Serilog.Extensions.Logging;
+using System;
+using System.Diagnostics;
+using System.Drawing;
 using System.Text;
 using System.Threading;
-using CommunityToolkit.Mvvm.Input;
+using System.Threading.Tasks;
+using System.Timers;
+using System.Windows.Forms;
 
 namespace Demo.ViewModels
 {
@@ -28,6 +29,7 @@ namespace Demo.ViewModels
         private readonly System.Timers.Timer _animationTimer;
         private int _animationPosition = 0;
         private bool _animationDirection = false;
+        private bool _inizialized = false;
 
         [ObservableProperty]
         public partial string ControllerState { get; set; } = "Unknown";
@@ -195,6 +197,17 @@ namespace Demo.ViewModels
                 return;
             }
 
+            if (!_inizialized)
+            {
+                MessageBox.Show(_instance,
+                    "SDL3 initialization failed. Controller polling is unavailable.",
+                    "Initialization failed",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+
+                return;
+            }
+
             this.IsRunning = true;
 
             _pollingTimer.Start();
@@ -229,7 +242,12 @@ namespace Demo.ViewModels
             _instance = form;
 
             _client = new(new SerilogLoggerFactory().CreateLogger("SteamControllerStatus"));
-            _client.Initialize();
+            _inizialized = _client.Initialize();
+
+            if (!_inizialized)
+            {
+                this.ControllerState = "SDL initialization failed";
+            }
 
             _pollingTimer = new()
             {
@@ -251,5 +269,16 @@ namespace Demo.ViewModels
             _animationTimer.Elapsed += this.OnAnimationTimerElapsed;
         }
         #endregion
+
+        public async Task ShutdownAsync()
+        {
+            this.Stop();
+
+            _pollingTimer.Dispose();
+            _logOutputTimer.Dispose();
+            _animationTimer.Dispose();
+
+            await _client.DisposeAsync();
+        }
     }
 }

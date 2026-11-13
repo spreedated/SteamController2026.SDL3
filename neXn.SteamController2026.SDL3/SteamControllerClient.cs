@@ -168,7 +168,7 @@ namespace neXn.SteamController2026.SDL3
 
                 if (retries > 0)
                 {
-                    await _delay(this.DelayBeforeRetry, cancellationToken);
+                    await _delay(this.DelayBeforeRetry, cancellationToken).ConfigureAwait(false);
                 }
             }
 
@@ -210,17 +210,30 @@ namespace neXn.SteamController2026.SDL3
 
             if (_sdlInitialized)
             {
+                _semagate.Release();
                 return true;
             }
 
-            if (!_sdl.Init(SDL.InitFlags.Gamepad))
+            try
             {
-                _logger?.LogError("SDL3 couldn't initialize: {Error}", SDL.GetError());
+                if (!_sdl.Init(SDL.InitFlags.Gamepad))
+                {
+                    _semagate.Release();
+                    _logger?.LogError("SDL3 couldn't initialize: {Error}", SDL.GetError());
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger?.LogError(ex, "SDL init error");
                 return false;
+            }
+            finally
+            {
+                _semagate.Release();
             }
 
             _sdlInitialized = true;
-            _semagate.Release();
 
             return true;
         }
@@ -235,7 +248,7 @@ namespace neXn.SteamController2026.SDL3
                 throw new InvalidOperationException("SDL3 is not initialized. Call Initialize() first.");
             }
 
-            await _semagate.WaitAsync(cancellationToken);
+            await _semagate.WaitAsync(cancellationToken).ConfigureAwait(false);
 
             try
             {
@@ -253,7 +266,7 @@ namespace neXn.SteamController2026.SDL3
                     };
                 }
 
-                return await this.GetSteamControllerStatus(cancellationToken);
+                return await this.GetSteamControllerStatus(cancellationToken).ConfigureAwait(false);
             }
             finally
             {
