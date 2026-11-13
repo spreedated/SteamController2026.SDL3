@@ -210,17 +210,29 @@ namespace neXn.SteamController2026.SDL3
 
             if (_sdlInitialized)
             {
+                _semagate.Release();
                 return true;
             }
 
-            if (!_sdl.Init(SDL.InitFlags.Gamepad))
+            try
             {
-                _logger?.LogError("SDL3 couldn't initialize: {Error}", SDL.GetError());
-                return false;
+                if (!_sdl.Init(SDL.InitFlags.Gamepad))
+                {
+                    _semagate.Release();
+                    _logger?.LogError("SDL3 couldn't initialize: {Error}", SDL.GetError());
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger?.LogError(ex, "SDL init error");
+            }
+            finally
+            {
+                _semagate.Release();
             }
 
             _sdlInitialized = true;
-            _semagate.Release();
 
             return true;
         }
