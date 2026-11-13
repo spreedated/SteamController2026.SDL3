@@ -29,6 +29,7 @@ namespace Demo.ViewModels
         private readonly System.Timers.Timer _animationTimer;
         private int _animationPosition = 0;
         private bool _animationDirection = false;
+        private bool _inizialized = false;
 
         [ObservableProperty]
         public partial string ControllerState { get; set; } = "Unknown";
@@ -196,6 +197,17 @@ namespace Demo.ViewModels
                 return;
             }
 
+            if (!_inizialized)
+            {
+                MessageBox.Show(_instance,
+                    "SDL3 initialization failed. Controller polling is unavailable.",
+                    "Initialization failed",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+
+                return;
+            }
+
             this.IsRunning = true;
 
             _pollingTimer.Start();
@@ -230,7 +242,12 @@ namespace Demo.ViewModels
             _instance = form;
 
             _client = new(new SerilogLoggerFactory().CreateLogger("SteamControllerStatus"));
-            _client.Initialize();
+            _inizialized = _client.Initialize();
+
+            if (!_inizialized)
+            {
+                this.ControllerState = "SDL initialization failed";
+            }
 
             _pollingTimer = new()
             {
