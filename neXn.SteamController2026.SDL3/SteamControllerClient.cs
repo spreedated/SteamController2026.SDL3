@@ -226,6 +226,7 @@ namespace neXn.SteamController2026.SDL3
             catch (Exception ex)
             {
                 _logger?.LogError(ex, "SDL init error");
+                return false;
             }
             finally
             {
