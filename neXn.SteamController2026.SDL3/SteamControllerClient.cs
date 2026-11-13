@@ -168,7 +168,7 @@ namespace neXn.SteamController2026.SDL3
 
                 if (retries > 0)
                 {
-                    await _delay(this.DelayBeforeRetry, cancellationToken);
+                    await _delay(this.DelayBeforeRetry, cancellationToken).ConfigureAwait(false);
                 }
             }
 
@@ -247,7 +247,7 @@ namespace neXn.SteamController2026.SDL3
                 throw new InvalidOperationException("SDL3 is not initialized. Call Initialize() first.");
             }
 
-            await _semagate.WaitAsync(cancellationToken);
+            await _semagate.WaitAsync(cancellationToken).ConfigureAwait(false);
 
             try
             {
@@ -265,7 +265,7 @@ namespace neXn.SteamController2026.SDL3
                     };
                 }
 
-                return await this.GetSteamControllerStatus(cancellationToken);
+                return await this.GetSteamControllerStatus(cancellationToken).ConfigureAwait(false);
             }
             finally
             {
